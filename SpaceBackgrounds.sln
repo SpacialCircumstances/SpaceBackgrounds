@@ -1,7 +1,8 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
-# SharpDevelop 5.1
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpaceBackgrounds", "SpaceBackgrounds\SpaceBackgrounds.csproj", "{7BBA7881-8159-468F-87D4-9F1AD894D841}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpaceBackgroundsExample", "SpaceBackgroundsExample\SpaceBackgroundsExample.csproj", "{FBC75051-51B8-408D-BF2C-E00F08066376}"
@@ -20,5 +21,8 @@ Global
 		{FBC75051-51B8-408D-BF2C-E00F08066376}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FBC75051-51B8-408D-BF2C-E00F08066376}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FBC75051-51B8-408D-BF2C-E00F08066376}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 EndGlobal

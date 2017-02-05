@@ -16,7 +16,7 @@ namespace SpaceBackgroundsExample
         public void Run()
         {
             Random r = new Random();
-            BackgroundGenerator gen = new BackgroundGenerator(r.Next(), r.Next(0, 4), true);
+            BackgroundGenerator gen = new BackgroundGenerator(r.Next(), r.Next(0, 4), true, r.Next(0, 3));
             gen.Run();
             Texture bg = gen.getTexture();
             ContextSettings cs = new ContextSettings();
@@ -48,7 +48,7 @@ namespace SpaceBackgroundsExample
             else
             {
                 Random r = new Random();
-                BackgroundGenerator gen = new BackgroundGenerator(r.Next(), r.Next(0, 4), true);
+                BackgroundGenerator gen = new BackgroundGenerator(r.Next(), r.Next(0, 4), true, r.Next(0, 3));
                 gen.Run();
                 Texture bg = gen.getTexture();
                 s = new Sprite(bg);

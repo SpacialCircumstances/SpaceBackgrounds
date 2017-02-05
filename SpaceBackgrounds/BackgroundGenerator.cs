@@ -5,7 +5,7 @@ using SFML.Graphics;
 using SharpNoise;
 using SharpNoise.Builders;
 using SharpNoise.Modules;
-using SharpNoise.Utilities;
+using SNU = SharpNoise.Utilities.Imaging;
 using SharpNoise.Models;
 
 namespace SpaceBackgrounds
@@ -17,16 +17,18 @@ namespace SpaceBackgrounds
             FinalTexture = new RenderTexture(800, 600);
             Seed = new Random().Next();
         }
-        public BackgroundGenerator(int seed, int sunCount, bool hasNebula)
+        public BackgroundGenerator(int seed, int sunCount, bool hasNebula, int numPlanets)
         {
             FinalTexture = new RenderTexture(800, 600);
             Seed = seed;
             SunCount = sunCount;
             NebulaActivated = hasNebula;
+            PlanetCount = numPlanets;
         }
         RenderTexture FinalTexture;
         public int Seed;
         public int SunCount;
+        public int PlanetCount;
         public bool NebulaActivated;
         public void Run()
         {
@@ -97,14 +99,16 @@ namespace SpaceBackgrounds
             }
 
             //Draw planet
-            Image pl = FinalTexture.Texture.CopyToImage();
-            Vector2f planetPosition = new Vector2f(rand.Next(0, 800), rand.Next(0, 600));
-            RenderPlanet(pl, planetPosition, 70);
-            Texture planetTexture = new Texture(pl);
-            Sprite p = new Sprite(planetTexture);
-            p.Position = new Vector2f(0, 0);
-            FinalTexture.Draw(p);
-
+            for (int i = 0; i < PlanetCount; i++)
+            {
+                Image pl = FinalTexture.Texture.CopyToImage();
+                Vector2f planetPosition = new Vector2f(rand.Next(0, 800), rand.Next(0, 600));
+                RenderPlanet(pl, planetPosition, rand.Next(50, 120));
+                Texture planetTexture = new Texture(pl);
+                Sprite p = new Sprite(planetTexture);
+                p.Position = new Vector2f(0, 0);
+                FinalTexture.Draw(p);
+            }
             FinalTexture.Display();
             
 
@@ -256,16 +260,9 @@ namespace SpaceBackgrounds
                     if(t <= size)
                     {
                         Color c = noise.GetPixel((uint)i, (uint)j);
-                        img.SetPixel((uint)i, (uint)j, c);
-                    }
-                    else if(t <= (size + 3))
-                    {
-                        Color c = noise.GetPixel((uint)i, (uint)j);
-                        Color b = img.GetPixel((uint)i, (uint)j);
-                        Color blue = new Color(0, 170, 188);
-                        Color f = MixColorAlpha(c, blue, 0.2f);
-                        Color fi = MixColorAlpha(f, b, t / (size + 5));
+                        Color f = MixColorAlpha(Color.Black, c, t / (1.1f * size));
                         img.SetPixel((uint)i, (uint)j, f);
+
                     }
                 }
             }
@@ -274,7 +271,7 @@ namespace SpaceBackgrounds
         {
 
             Color[,] colors = new Color[800, 600];
-            NoiseMap mapr = getNoiseMap(startx, starty, 6, 6, 2.5, 0.5);
+            NoiseMap mapr = getNoiseMap(startx, starty, 12, 12, 2.7, 0.8);
             for (int i = 0; i < 800; i++)
             {
                 for (int j = 0; j < 600; j++)
