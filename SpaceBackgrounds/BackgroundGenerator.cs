@@ -82,6 +82,7 @@ namespace SpaceBackgrounds
 
 
             //Draw sun(s).
+
             if (SunCount != 0)
             {
                 Image stars = FinalTexture.Texture.CopyToImage();
@@ -99,11 +100,12 @@ namespace SpaceBackgrounds
             }
 
             //Draw planet
+
             for (int i = 0; i < PlanetCount; i++)
             {
                 Image pl = FinalTexture.Texture.CopyToImage();
                 Vector2f planetPosition = new Vector2f(rand.Next(0, 800), rand.Next(0, 600));
-                RenderPlanet(pl, planetPosition, rand.Next(50, 120));
+                RenderPlanet(pl, planetPosition, rand.Next(50, 140));
                 Texture planetTexture = new Texture(pl);
                 Sprite p = new Sprite(planetTexture);
                 p.Position = new Vector2f(0, 0);
