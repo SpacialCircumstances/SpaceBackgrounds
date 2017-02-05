@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using SFML.System;
 using SFML.Window;
 using SFML.Graphics;
@@ -24,12 +25,14 @@ namespace SpaceBackgrounds
             SunCount = sunCount;
             NebulaActivated = hasNebula;
             PlanetCount = numPlanets;
+            Planets = new List<Planet>();
         }
         RenderTexture FinalTexture;
         public int Seed;
         public int SunCount;
         public int PlanetCount;
         public bool NebulaActivated;
+        public List<Planet> Planets;
         public void Run()
         {
             Random rand = new Random(Seed);
@@ -101,11 +104,30 @@ namespace SpaceBackgrounds
 
             //Draw planet
 
-            for (int i = 0; i < PlanetCount; i++)
+            if (PlanetCount != 0)
             {
                 Image pl = FinalTexture.Texture.CopyToImage();
-                Vector2f planetPosition = new Vector2f(rand.Next(0, 800), rand.Next(0, 600));
-                RenderPlanet(pl, planetPosition, rand.Next(50, 140));
+                for (int i = 0; i < PlanetCount; i++)
+                {
+                    bool cor = false;
+                    float size = 0f;
+                    Vector2f planetPosition = new Vector2f();
+                    while(!cor)
+                    {
+                        size = rand.Next(70, 140);
+                        planetPosition = new Vector2f(rand.Next(0, 800), rand.Next(0, 600));
+                        cor = true;
+                        foreach (Planet planet in Planets)
+                        {
+                            if(distance(planet.Position, planetPosition) < planet.Size + size)
+                            {
+                                cor = false;
+                            }
+                        }
+                    }
+                    RenderPlanet(pl, planetPosition, size);
+                    Planets.Add(new Planet(planetPosition, size));
+                }
                 Texture planetTexture = new Texture(pl);
                 Sprite p = new Sprite(planetTexture);
                 p.Position = new Vector2f(0, 0);
