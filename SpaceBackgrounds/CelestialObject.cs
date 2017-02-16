@@ -7,9 +7,9 @@ using SFML.System;
 
 namespace SpaceBackgrounds
 {
-    public class Planet
+    public class CelestialObject
     {
-        public Planet(Vector2f pos, float size)
+        public CelestialObject(Vector2f pos, float size)
         {
             Position = pos;
             Size = size;

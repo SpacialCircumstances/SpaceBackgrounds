@@ -1,4 +1,5 @@
 ﻿using System;
+using SpaceBackgrounds;
 
 namespace SpaceBackgroundsExample
 {
@@ -6,7 +7,7 @@ namespace SpaceBackgroundsExample
 	{
 		public static void Main(string[] args)
 		{
-			Game game = new Game();
+            Game game = new Game();
 			game.Run();
 		}
 	}

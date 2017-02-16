@@ -8,37 +8,29 @@ using SharpNoise.Builders;
 using SharpNoise.Modules;
 using SNU = SharpNoise.Utilities.Imaging;
 using SharpNoise.Models;
+using SpaceBackgrounds.Generators;
+using SpaceBackgrounds.Models;
 
 namespace SpaceBackgrounds
 {
     public class BackgroundGenerator
     {
-        public BackgroundGenerator()
+        public BackgroundGenerator(StarSystem s)
         {
-            FinalTexture = new RenderTexture(800, 600);
-            Seed = new Random().Next();
+            SystemDescription = s;
+            Planets = new List<CelestialObject>();
+            Suns = new List<CelestialObject>();
         }
-        public BackgroundGenerator(int seed, int sunCount, bool hasNebula, int numPlanets)
-        {
-            FinalTexture = new RenderTexture(800, 600);
-            Seed = seed;
-            SunCount = sunCount;
-            NebulaActivated = hasNebula;
-            PlanetCount = numPlanets;
-            Planets = new List<Planet>();
-        }
-        RenderTexture FinalTexture;
-        public int Seed;
-        public int SunCount;
-        public int PlanetCount;
-        public bool NebulaActivated;
-        public List<Planet> Planets;
+        Image Main;
+        public StarSystem SystemDescription;
+        private List<CelestialObject> Planets;
+        private List<CelestialObject> Suns;
+
         public void Run()
         {
-            Random rand = new Random(Seed);
-            FinalTexture.Clear(Color.Black);
+            Random rand = new Random(SystemDescription.Seed);
+			Main = new Image(800, 600, Color.Black);
             //Background Stars
-            Image starsImage = new Image(800, 600);
             int starCount = rand.Next(500, 1800);
             byte c;
             Color randColor;
@@ -46,128 +38,114 @@ namespace SpaceBackgrounds
             {
                 c = (byte)rand.Next(0, 255);
                 randColor = new Color(c, c, c, 255);
-                starsImage.SetPixel((uint)rand.Next(0, 799), (uint)rand.Next(599), randColor);
+                Main.SetPixel((uint)rand.Next(0, 799), (uint)rand.Next(599), randColor);
             }
-            Texture starsTexture = new Texture(starsImage);
-            Sprite starsSprite = new Sprite(starsTexture);
-            starsSprite.Position = new Vector2f(0, 0);
-            FinalTexture.Draw(starsSprite);
 
             //Draw Nebula.
-            if (NebulaActivated)
+            if (SystemDescription.Nebula == NebulaType.Monochrome)
             {
                 int startx = rand.Next(0, 5000);
                 int starty = rand.Next(0, 5000);
                 float down = 0.6f + ((float)rand.Next(0, 7) / 10);
-                int type = rand.Next(0, 7);
+                int type = rand.Next(0, 3);
                 Image noise;
-                if (type == 6)
+                if (type == 0)
                 {
                     noise = getMCNoise(startx, starty, down, "R");
+                    Main = Utils.BlendAlpha(Main, noise);
                 }
-                else if (type == 5)
+                else if (type == 1)
                 {
                     noise = getMCNoise(startx, starty, down, "G");
+                    Main = Utils.BlendAlpha(Main, noise);
                 }
-                else if (type == 4)
+                else if (type == 2)
                 {
                     noise = getMCNoise(startx, starty, down, "B");
+                    Main = Utils.BlendAlpha(Main, noise);
                 }
-                else
-                {
-                    noise = getNoise(startx, starty, down);
-                }
-                Texture noiseTexture = new Texture(noise);
-                Sprite noiseSprite = new Sprite(noiseTexture);
-                noiseSprite.Position = new Vector2f(0, 0);
-                FinalTexture.Draw(noiseSprite);
+
+            }
+            else if (SystemDescription.Nebula == NebulaType.Polychrome)
+            {
+            	int startx = rand.Next(0, 5000);
+                int starty = rand.Next(0, 5000);
+                float down = 0.6f + ((float)rand.Next(0, 7) / 10);
+                Image noise = getNoise(startx, starty, down);
+                Main = Utils.BlendAlpha(Main, noise);
             }
 
 
-            //Draw sun(s).
-
-            if (SunCount != 0)
+            if (SystemDescription.Suns.Count != 0)
             {
-                Image stars = FinalTexture.Texture.CopyToImage();
-                for (int i = 0; i < SunCount; i++)
+                foreach(Sun sun in SystemDescription.Suns)
                 {
                     Vector2f starPos = new Vector2f(rand.Next(0, 800), rand.Next(0, 600));
-                    int co = rand.Next(0, 5);
                     float rad1 = rand.Next(170, 410);
-                    RenderStar(stars, rad1, getSunColor(co), getSunColor(co), starPos);
+                    RenderStar(Main, rad1, getSunColor(sun.Type), getSunColor(sun.Type), starPos);
+                    Suns.Add(new CelestialObject(starPos, rad1));
                 }
-                Texture sunTexture = new Texture(stars);
-                Sprite s = new Sprite(sunTexture);
-                s.Position = new Vector2f(0, 0);
-                FinalTexture.Draw(s);
             }
 
             //Draw planet
 
-            if (PlanetCount != 0)
+            if (SystemDescription.Planets.Count != 0)
             {
-                Image pl = FinalTexture.Texture.CopyToImage();
-                for (int i = 0; i < PlanetCount; i++)
+                foreach(Planet p in SystemDescription.Planets)
                 {
                     bool cor = false;
                     float size = 0f;
                     Vector2f planetPosition = new Vector2f();
-                    while(!cor)
+                    //Calculate Shadow
+                    while (!cor)
                     {
                         size = rand.Next(70, 140);
                         planetPosition = new Vector2f(rand.Next(0, 800), rand.Next(0, 600));
                         cor = true;
-                        foreach (Planet planet in Planets)
+                        foreach (CelestialObject planet in Planets)
                         {
-                            if(distance(planet.Position, planetPosition) < planet.Size + size)
+                            if (distance(planet.Position, planetPosition) < planet.Size + size)
                             {
                                 cor = false;
                             }
                         }
                     }
-                    RenderPlanet(pl, planetPosition, size);
-                    Planets.Add(new Planet(planetPosition, size));
+                    RenderPlanet(Main, planetPosition, size, p.Type, p.Moons);
+                    Planets.Add(new CelestialObject(planetPosition, size));
                 }
-                Texture planetTexture = new Texture(pl);
-                Sprite p = new Sprite(planetTexture);
-                p.Position = new Vector2f(0, 0);
-                FinalTexture.Draw(p);
             }
-            FinalTexture.Display();
-            
-
         }
-        public Image getNoise(int startx, int starty, float down)
+        private Image getNoise(int startx, int starty, float down)
         {
             Color[,] colors = new Color[800, 600];
-            NoiseMap mapr = getNoiseMap(startx, starty, 3, 3, 2.5, 0.5);
-            NoiseMap mapg = getNoiseMap(startx + 100, starty + 100, 3, 3, 2.5, 0.5);
-            NoiseMap mapb = getNoiseMap(startx + 200, starty + 200, 3, 3, 2.5, 0.5);
-            NoiseMap mapa = getNoiseMap(startx + 700, starty + 700, 2, 2, 0.7, 0.3);
+            NoiseMap mapr = Utils.getNoiseMap(startx, starty, 3, 3, 2.5, 0.5);
+            NoiseMap mapg = Utils.getNoiseMap(startx + 100, starty + 100, 3, 3, 2.5, 0.5);
+            NoiseMap mapb = Utils.getNoiseMap(startx + 200, starty + 200, 3, 3, 2.5, 0.5);
+            NoiseMap mapa = Utils.getNoiseMap(startx + 700, starty + 700, 2, 2, 0.7, 0.3);
             for (int i = 0; i < 800; i++)
             {
                 for (int j = 0; j < 600; j++)
                 {
-                    byte r = NormNoise(mapr.GetValue(i, j));
-                    byte g = NormNoise(mapg.GetValue(i, j));
-                    byte b = NormNoise(mapb.GetValue(i, j));
-                    byte a = NormNoise(mapa.GetValue(i, j) - (down + 0.05f));
+                    byte r = Utils.NormNoise(mapr.GetValue(i, j));
+                    byte g = Utils.NormNoise(mapg.GetValue(i, j));
+                    byte b = Utils.NormNoise(mapb.GetValue(i, j));
+                    byte a = Utils.NormNoise(mapa.GetValue(i, j) - (down));
                     colors[i, j] = new Color(r, g, b, a);
                 }
             }
             return new Image(colors);
         }
-        public Image getMCNoise(int startx, int starty, float down, string rgb)
+        private Image getMCNoise(int startx, int starty, float down, string rgb)
         {
             Color[,] colors = new Color[800, 600];
-            NoiseMap mapr = getNoiseMap(startx, starty, 6, 6, 2.5, 0.5);
-            NoiseMap mapa = getNoiseMap(startx + 300, starty + 300, 3, 3, 0.7, 0.3);
+            NoiseMap mapr = Utils.getNoiseMap(startx, starty, 6, 6, 2.5, 0.5);
+            NoiseMap mapa = Utils.getNoiseMap(startx + 300, starty + 300, 3, 3, 0.7, 0.3);
             for (int i = 0; i < 800; i++)
             {
                 for (int j = 0; j < 600; j++)
                 {
-                    byte r = NormNoise(mapr.GetValue(i, j));
-                    byte a = NormNoise(mapa.GetValue(i, j) - down);
+                    byte r = Utils.NormNoise(mapr.GetValue(i, j));
+                    byte a = Utils.NormNoise(mapa.GetValue(i, j) - down);
                     if (rgb == "R")
                     {
                         colors[i, j] = new Color(r, 0, 0, a);
@@ -186,45 +164,7 @@ namespace SpaceBackgrounds
         }
         public Texture getTexture()
         {
-            return FinalTexture.Texture;
-        }
-        private byte NormNoise(double val)
-        {
-            if (val > 1)
-            {
-                val = 1;
-            }
-            else if (val < -1)
-            {
-                val = -1;
-            }
-            byte result = (byte)((val + 1) * 127);
-            return result;
-        }
-        private NoiseMap getNoiseMap(double seedx, double seedy, int height, int width, double lacunarity, double persistence)
-        {
-            NoiseMap map = new NoiseMap();
-            PlaneNoiseMapBuilder builder = new PlaneNoiseMapBuilder();
-            Simplex simplex = new Simplex();
-            simplex.Lacunarity = lacunarity;
-            simplex.Persistence = persistence;
-            builder.SourceModule = simplex;
-            builder.DestNoiseMap = map;
-            builder.SetDestSize(800, 600);
-            builder.SetBounds(seedx, seedx + width, seedy, seedy + height);
-            builder.Build();
-            return map;
-        }
-        private Color MixColorAlpha(Color a, Color b, float alpha)
-        {
-            if(alpha > 1)
-            {
-                throw new Exception("Alpha can be maximal 1");
-            }
-            float r = 1 - alpha;
-            Color am = new Color((byte)(a.R * alpha), (byte)(a.G * alpha), (byte)(a.B * alpha));
-            Color bm = new Color((byte)(b.R * r), (byte)(b.G * r), (byte)(b.B * r));
-            return am + bm;
+        	return new Texture(Main);
         }
         private void RenderStar(Image img, float radius, Color color, Color haloColor, Vector2f pos)
         {
@@ -236,14 +176,14 @@ namespace SpaceBackgrounds
                     Color f;
                     if (t < radius * 0.2f)
                     {
-                        f = MixColorAlpha(Color.White, color, 1 / (t + 1));
+                        f = Utils.MixColorAlpha(Color.White, color, 1 / (t + 1));
                     }
                     else
                     {
-                        f = MixColorAlpha(color, haloColor, function(t, 1 / (0.8f * radius)));
+                        f = Utils.MixColorAlpha(color, haloColor, function(t, 1 / (0.8f * radius)));
                     }
                     Color c = img.GetPixel((uint)i, (uint)j);
-                    Color fi = MixColorAlpha(f, c, function(t, 1 / (0.7f * radius)));
+                    Color fi = Utils.MixColorAlpha(f, c, function(t, 1 / (0.7f * radius)));
                     img.SetPixel((uint)i, (uint)j, fi);
                 }
             }
@@ -256,12 +196,28 @@ namespace SpaceBackgrounds
             return (float)dist;
         }
 
-        private Color getSunColor(int num)
+        private Color getSunColor(SunType type)
         {
             Color orange = new Color(255, 128, 0);
             Color cyan = new Color(113, 120, 239);
-            Color[] cols = { cyan, Color.White, Color.Yellow, orange, Color.Magenta };
-            return cols[num];
+            switch (type)
+            {
+            	case SunType.Cyan:
+            		return cyan;
+            	case SunType.Magenta:
+            		return Color.Magenta;
+            	case SunType.Orange:
+            		return orange;
+            	case SunType.Red:
+            		return Color.Red;
+            	case SunType.White:
+            		return Color.White;
+            	case SunType.Yellow:
+            		return Color.Yellow;
+            	default:
+            		return Color.Transparent;
+            }
+            
         }
         float function(float x, float k)
         {
@@ -270,41 +226,82 @@ namespace SpaceBackgrounds
             float result = s + a * (float)Math.Exp(-k * x);
             return result;
         }
-        private void RenderPlanet(Image img, Vector2f pos, float size)
+        private void RenderPlanet(Image img, Vector2f pos, float size, PlanetType type, int moons)
         {
-            Random rand = new Random(Seed - 389);
-            int x = rand.Next(0, 3000);
-            int y = rand.Next(0, 3000);
-            Image noise = getPlanetSurface(x, y);
-            for(int i = 0; i < 800; i++)
-            {
-                for(int j = 0; j < 600; j++)
-                {
-                    float t = distance(new Vector2f(i, j), pos);
-                    if(t <= size)
-                    {
-                        Color c = noise.GetPixel((uint)i, (uint)j);
-                        Color f = MixColorAlpha(Color.Black, c, t / (1.1f * size));
-                        img.SetPixel((uint)i, (uint)j, f);
+            Random rand = new Random(SystemDescription.Seed - 389);
+            PlanetGenerator gen = getGenerator(type, new Vector2u(800, 600), rand.Next());
+            gen.RenderPlanetSurface();
+            Image noise = gen.Surface;
+            List<CelestialObject> Moons = new List<CelestialObject>();
 
-                    }
+            for(int i = 0; i < moons; i++)
+            {
+                if (rand.Next(0, 2) == 1)
+                {
+                    Vector2f mpos = new Vector2f(rand.Next((int)pos.X - (int)size, (int)pos.X + 2 * (int)size), rand.Next((int)pos.Y - (int)size, (int)pos.Y + 2 * (int)size));
+                    Moons.Add(new CelestialObject(mpos, rand.Next(8, 28)));
                 }
             }
-        }
-        private Image getPlanetSurface(int startx, int starty)
-        {
+            float min = 1000f;
+            CelestialObject nearestSun = new CelestialObject(new Vector2f(), 0f);
+            foreach (CelestialObject sun in Suns)
+            {
+                float dist = distance(sun.Position, pos);
+                if (dist < min)
+                {
+                    min = dist;
+                    nearestSun = sun;
+                }
+            }
+            bool Shadow = true; //Deactivated temporary
+            Vector2f ShadowPosition = new Vector2f();
+            float ShadowRadius = 0f;
+            if (distance(nearestSun.Position, pos) < size)
+            {
+                //Draw no Shadow
+                Shadow = false;
+            }
+            else
+            {
+                Vector2f dif = pos - nearestSun.Position;
+                ShadowPosition = pos + new Vector2f(dif.X / 4, dif.Y / 4);
+                ShadowRadius = size;
+            }
 
-            Color[,] colors = new Color[800, 600];
-            NoiseMap mapr = getNoiseMap(startx, starty, 12, 12, 2.7, 0.8);
             for (int i = 0; i < 800; i++)
             {
                 for (int j = 0; j < 600; j++)
                 {
-                    byte r = NormNoise(mapr.GetValue(i, j));
-                    colors[i, j] = new Color(r, r, r);
+                    Vector2f current = new Vector2f(i, j);
+                    float t = distance(current, pos);
+                    if (t <= size)
+                    {
+                        Color c = noise.GetPixel((uint)i, (uint)j);
+                        Color f = Utils.MixColorAlpha(Color.Black, c, t / (1.1f * size));
+
+                        if (Shadow)
+                        {
+                            float d = distance(new Vector2f(i, j), ShadowPosition);
+                            f = Utils.MixColorAlpha(f, Color.Black, function(d, 1 / (0.85f * ShadowRadius)));
+                        }
+                        img.SetPixel((uint)i, (uint)j, f);
+                    }
+                    foreach (CelestialObject co in Moons)
+                    {
+                        float dist = distance(co.Position, current);
+                        if (dist <= co.Size)
+                        {
+                            img.SetPixel((uint)i, (uint)j, Color.Black);
+                        }
+                    }
                 }
             }
-            return new Image(colors);
+        }
+
+        private PlanetGenerator getGenerator(PlanetType type, Vector2u size, int seed)
+        {
+        	PlanetGenerator gen = GeneratorMapper.getGenerator(type, size, seed);
+            return gen; 
         }
     }
 }

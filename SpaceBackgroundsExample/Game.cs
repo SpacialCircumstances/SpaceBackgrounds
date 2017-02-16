@@ -3,6 +3,7 @@ using SFML.System;
 using SFML.Window;
 using SFML.Graphics;
 using SpaceBackgrounds;
+using SpaceBackgrounds.Models;
 
 namespace SpaceBackgroundsExample
 {
@@ -10,28 +11,33 @@ namespace SpaceBackgroundsExample
     {
         public Game()
         {
-
+            duration = new Text("0", new Font("DejaVuSans.ttf"), 50);
+            duration.Position = new Vector2f(500, 530);
+            duration.Color = Color.Red;
         }
         Sprite s;
+        Text duration;
+        Random r;
+
         public void Run()
         {
-            Random r = new Random();
-            BackgroundGenerator gen = new BackgroundGenerator(r.Next(), r.Next(0, 4), true, 2);
-            gen.Run();
-            Texture bg = gen.getTexture();
+            r = new Random();
+            Clock c = new Clock();
+            GenerateImage();
+            int dur = c.ElapsedTime.AsMilliseconds();
+            duration.DisplayedString = Convert.ToString(dur);
             ContextSettings cs = new ContextSettings();
             cs.AntialiasingLevel = 4;
             VideoMode mode = new VideoMode(800, 600, 32);
             RenderWindow window = new RenderWindow(mode, "Space Scene Window", Styles.Close | Styles.Titlebar, cs);
             window.Closed += (object sender, EventArgs e) => window.Close();
             window.KeyPressed += KeyPress;
-            s = new Sprite(bg);
-            s.Position = new Vector2f(0, 0);
             while (window.IsOpen)
             {
                 window.DispatchEvents();
                 window.Clear();
                 window.Draw(s);
+                window.Draw(duration);
                 window.Display();
             }
         }
@@ -48,11 +54,23 @@ namespace SpaceBackgroundsExample
             else
             {
                 Random r = new Random();
-                BackgroundGenerator gen = new BackgroundGenerator(r.Next(), r.Next(0, 4), true, 2);
-                gen.Run();
-                Texture bg = gen.getTexture();
-                s = new Sprite(bg);
+                Clock c = new Clock();
+                GenerateImage();
+                int dur = c.ElapsedTime.AsMilliseconds();
+                duration.DisplayedString = Convert.ToString(dur);
             }
+        }
+        private void GenerateImage()
+        {
+            StarSystem sys = new StarSystem(r.Next());
+            sys.Asteroids = false;
+            sys.Nebula = NebulaType.Monochrome;
+            sys.Planets.Add(new Planet(PlanetType.Terran, 2));
+            sys.Suns.Add(new Sun(SunType.Orange));
+            BackgroundGenerator gen = new BackgroundGenerator(sys);
+            gen.Run();
+            s = new Sprite(gen.getTexture());
+            s.Position = new Vector2f(0, 0);
         }
     }
 }

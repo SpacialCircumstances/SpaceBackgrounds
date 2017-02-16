@@ -41,17 +41,21 @@
     <Reference Include="Microsoft.CSharp">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
-    <Reference Include="sfmlnet-audio-2">
-      <HintPath>..\..\SFML.NET\SFML.Net\lib\x86\sfmlnet-audio-2.dll</HintPath>
+    <Reference Include="sfmlnet-audio-2, Version=2.3.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Strategic\Strategic\Strategic\bin\Debug\sfmlnet-audio-2.dll</HintPath>
     </Reference>
-    <Reference Include="sfmlnet-graphics-2">
-      <HintPath>..\..\SFML.NET\SFML.Net\lib\x86\sfmlnet-graphics-2.dll</HintPath>
+    <Reference Include="sfmlnet-graphics-2, Version=2.3.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Strategic\Strategic\Strategic\bin\Debug\sfmlnet-graphics-2.dll</HintPath>
     </Reference>
-    <Reference Include="sfmlnet-system-2">
-      <HintPath>..\..\SFML.NET\SFML.Net\lib\x86\sfmlnet-system-2.dll</HintPath>
+    <Reference Include="sfmlnet-system-2, Version=2.3.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Strategic\Strategic\Strategic\bin\Debug\sfmlnet-system-2.dll</HintPath>
     </Reference>
-    <Reference Include="sfmlnet-window-2">
-      <HintPath>..\..\SFML.NET\SFML.Net\lib\x86\sfmlnet-window-2.dll</HintPath>
+    <Reference Include="sfmlnet-window-2, Version=2.3.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Strategic\Strategic\Strategic\bin\Debug\sfmlnet-window-2.dll</HintPath>
     </Reference>
     <Reference Include="SharpNoise, Version=0.11.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpNoise.0.11.0\lib\net45\SharpNoise.dll</HintPath>
@@ -73,8 +77,22 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BackgroundGenerator.cs" />
-    <Compile Include="Planet.cs" />
+    <Compile Include="CelestialObject.cs" />
+    <Compile Include="Generators\BluePlanetGenerator.cs" />
+    <Compile Include="Generators\GeneratorMapper.cs" />
+    <Compile Include="Generators\PlanetGenerator.cs" />
+    <Compile Include="Generators\SnowGenerator.cs" />
+    <Compile Include="Generators\TerraGenerator.cs" />
+    <Compile Include="Gradient.cs" />
+    <Compile Include="GradientBuilder.cs" />
+    <Compile Include="Models\NebulaType.cs" />
+    <Compile Include="Models\Planet.cs" />
+    <Compile Include="Models\PlanetType.cs" />
+    <Compile Include="Models\StarSystem.cs" />
+    <Compile Include="Models\Sun.cs" />
+    <Compile Include="Models\SunType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utils.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\" />
