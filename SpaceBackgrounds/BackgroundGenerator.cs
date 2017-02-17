@@ -200,6 +200,8 @@ namespace SpaceBackgrounds
         {
             Color orange = new Color(255, 128, 0);
             Color cyan = new Color(113, 120, 239);
+            Color[] all = { cyan, orange, Color.Magenta, Color.White, Color.Red, Color.Yellow };
+            Random r = new Random(SystemDescription.Seed - 333);
             switch (type)
             {
             	case SunType.Cyan:
@@ -214,8 +216,8 @@ namespace SpaceBackgrounds
             		return Color.White;
             	case SunType.Yellow:
             		return Color.Yellow;
-            	default:
-            		return Color.Transparent;
+                default:
+                    return all[r.Next(0, 7)];
             }
             
         }

@@ -9,6 +9,7 @@ namespace SpaceBackgrounds.Models
 		Yellow,
 		Orange,
 		Red,
-		Magenta		
+		Magenta,
+        Random
 	}
 }
