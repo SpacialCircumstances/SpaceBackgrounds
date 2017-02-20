@@ -13,7 +13,7 @@ namespace SpaceBackgroundsExample
         {
             duration = new Text("0", new Font("DejaVuSans.ttf"), 50);
             duration.Position = new Vector2f(500, 530);
-            duration.Color = Color.Red;
+            duration.FillColor = Color.Red;
         }
         Sprite s;
         Text duration;

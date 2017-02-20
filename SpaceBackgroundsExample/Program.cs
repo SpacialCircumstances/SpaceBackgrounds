@@ -7,8 +7,18 @@ namespace SpaceBackgroundsExample
 	{
 		public static void Main(string[] args)
 		{
-            Game game = new Game();
-			game.Run();
+            try
+            {
+                Game game = new Game();
+                game.Run();
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.Source);
+                Console.WriteLine(e.TargetSite);
+                Console.Read();
+            }
 		}
 	}
 }
