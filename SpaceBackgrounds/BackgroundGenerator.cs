@@ -82,6 +82,10 @@ namespace SpaceBackgrounds
                 {
                     Vector2f starPos = new Vector2f(rand.Next(0, 800), rand.Next(0, 600));
                     float rad1 = rand.Next(170, 410);
+                    if(sun.Type == SunType.Giant)
+                    {
+                        rad1 = rand.Next(450, 700);
+                    }
                     RenderStar(Main, rad1, getSunColor(sun.Type), getSunColor(sun.Type), starPos);
                     Suns.Add(new CelestialObject(starPos, rad1));
                 }
@@ -216,6 +220,8 @@ namespace SpaceBackgrounds
             		return Color.White;
             	case SunType.Yellow:
             		return Color.Yellow;
+                case SunType.Giant:
+                    return Color.Red;
                 default:
                     return all[r.Next(0, 7)];
             }

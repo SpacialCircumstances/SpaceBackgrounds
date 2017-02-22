@@ -10,6 +10,7 @@ namespace SpaceBackgrounds.Models
 		Orange,
 		Red,
 		Magenta,
+        Giant,
         Random
 	}
 }

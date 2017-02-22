@@ -66,7 +66,7 @@ namespace SpaceBackgroundsExample
             sys.Asteroids = false;
             sys.Nebula = NebulaType.Monochrome;
             sys.Planets.Add(new Planet(PlanetType.Terran, 2));
-            sys.Suns.Add(new Sun(SunType.Orange));
+            sys.Suns.Add(new Sun(SunType.Giant));
             BackgroundGenerator gen = new BackgroundGenerator(sys);
             gen.Run();
             s = new Sprite(gen.getTexture());
