@@ -1,5 +1,5 @@
 ﻿/*
-SpaceBackgroundsGenerator Example
+SpaceBackgroundsGenerator
 Copyright(c) 2017 Felix Nolte
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -21,26 +21,24 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 using System;
-using SpaceBackgrounds;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using SFML.Graphics;
 
-namespace SpaceBackgroundsExample
+namespace SpaceBackgrounds.Models
 {
-	class Program
-	{
-		public static void Main(string[] args)
-		{
-            try
-            {
-                Game game = new Game();
-                game.Run();
-            }
-            catch(Exception e)
-            {
-                Console.WriteLine(e.Message);
-                Console.WriteLine(e.Source);
-                Console.WriteLine(e.TargetSite);
-                Console.Read();
-            }
-		}
-	}
+    public class Sun
+    {
+    	public Sun()
+    	{
+    		Type = SunType.Orange;
+    	}
+    	public Sun(SunType type)
+    	{
+    		Type = type;
+    	}
+    	public SunType Type;
+    }
 }

@@ -1,5 +1,5 @@
 ﻿/*
-SpaceBackgroundsGenerator Example
+SpaceBackgroundsGenerator
 Copyright(c) 2017 Felix Nolte
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -21,26 +21,18 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 using System;
-using SpaceBackgrounds;
 
-namespace SpaceBackgroundsExample
+namespace SpaceBackgrounds.Models
 {
-	class Program
+	public enum SunType
 	{
-		public static void Main(string[] args)
-		{
-            try
-            {
-                Game game = new Game();
-                game.Run();
-            }
-            catch(Exception e)
-            {
-                Console.WriteLine(e.Message);
-                Console.WriteLine(e.Source);
-                Console.WriteLine(e.TargetSite);
-                Console.Read();
-            }
-		}
+		White,
+		Cyan,
+		Yellow,
+		Orange,
+		Red,
+		Magenta,
+        Giant,
+        Random
 	}
 }

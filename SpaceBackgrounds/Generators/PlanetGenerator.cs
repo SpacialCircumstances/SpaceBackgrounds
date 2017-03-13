@@ -1,5 +1,5 @@
 ﻿/*
-SpaceBackgroundsGenerator Example
+SpaceBackgroundsGenerator
 Copyright(c) 2017 Felix Nolte
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -21,26 +21,27 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 using System;
-using SpaceBackgrounds;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using SFML.System;
+using SFML.Graphics;
 
-namespace SpaceBackgroundsExample
+namespace SpaceBackgrounds.Generators
 {
-	class Program
-	{
-		public static void Main(string[] args)
-		{
-            try
-            {
-                Game game = new Game();
-                game.Run();
-            }
-            catch(Exception e)
-            {
-                Console.WriteLine(e.Message);
-                Console.WriteLine(e.Source);
-                Console.WriteLine(e.TargetSite);
-                Console.Read();
-            }
-		}
-	}
+    public class PlanetGenerator
+    {
+        public PlanetGenerator(Vector2u Size, int seed)
+        {
+            Surface = new Image(Size.X, Size.Y);
+            Seed = seed;
+        }
+        public Image Surface;
+        protected int Seed;
+        public virtual void RenderPlanetSurface()
+        {
+
+        }
+    }
 }

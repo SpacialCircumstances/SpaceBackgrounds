@@ -1,5 +1,5 @@
 ﻿/*
-SpaceBackgroundsGenerator Example
+SpaceBackgroundsGenerator
 Copyright(c) 2017 Felix Nolte
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -21,26 +21,43 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 using System;
-using SpaceBackgrounds;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace SpaceBackgroundsExample
+namespace SpaceBackgrounds.Models
 {
-	class Program
-	{
-		public static void Main(string[] args)
-		{
-            try
-            {
-                Game game = new Game();
-                game.Run();
-            }
-            catch(Exception e)
-            {
-                Console.WriteLine(e.Message);
-                Console.WriteLine(e.Source);
-                Console.WriteLine(e.TargetSite);
-                Console.Read();
-            }
-		}
-	}
+    public class StarSystem
+    {
+        public StarSystem()
+        {
+            Suns = new List<Sun>();
+            Planets = new List<Planet>();
+            Nebula = NebulaType.None;
+            Asteroids = false;
+            Seed = 0;
+        }
+        public StarSystem(NebulaType type, Boolean asteroids)
+        {
+        	Asteroids = asteroids;
+        	Nebula = type;
+            Suns = new List<Sun>();
+            Planets = new List<Planet>();
+            Seed = 0;
+        }
+        public StarSystem(int seed)
+        {
+        	Seed = seed;
+            Suns = new List<Sun>();
+            Planets = new List<Planet>();
+            Nebula = NebulaType.None;
+            Asteroids = false;
+        }
+        public List<Sun> Suns;
+        public List<Planet> Planets;
+        public NebulaType Nebula;
+        public Boolean Asteroids;
+        public int Seed;
+    }
 }
