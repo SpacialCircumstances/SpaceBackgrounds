@@ -31,11 +31,11 @@ using SharpNoise;
 
 namespace SpaceBackgrounds.Generators
 {
-    public class BluePlanetGenerator: PlanetGenerator
+    public class RedGenerator: PlanetGenerator
     {
-        public BluePlanetGenerator(Vector2u size, int seed): base(size, seed)
+        public RedGenerator(Vector2u size, int seed): base(size, seed)
         {
-             rand = new Random(Seed);
+            rand = new Random(Seed);
         }
         Random rand;
         public override void RenderPlanetSurface()
@@ -58,9 +58,10 @@ namespace SpaceBackgrounds.Generators
                 }
             }
             GradientBuilder grad = new GradientBuilder();
-            grad.AddGradient(new Gradient(0, Color.Black));
-            grad.AddGradient(new Gradient(26, Color.Blue));
-            grad.AddGradient(new Gradient(255, Color.Cyan));
+            grad.AddGradient(new Gradient(0, Color.Gray));
+            grad.AddGradient(new Gradient(20, Color.OrangeRed));
+            grad.AddGradient(new Gradient(225, Color.Orange));
+            grad.AddGradient(new Gradient(255, Color.LightGray));
             grad.PrepareGradients();
             grad.SourceImage = new Image(colors);
             return grad.Render();

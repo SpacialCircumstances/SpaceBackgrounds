@@ -79,6 +79,7 @@
     <Compile Include="Generators\BluePlanetGenerator.cs" />
     <Compile Include="Generators\GeneratorMapper.cs" />
     <Compile Include="Generators\PlanetGenerator.cs" />
+    <Compile Include="Generators\RedGenerator.cs" />
     <Compile Include="Generators\SnowGenerator.cs" />
     <Compile Include="Generators\TerraGenerator.cs" />
     <Compile Include="Gradient.cs" />
